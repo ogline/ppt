@@ -24,7 +24,7 @@
         
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 500px;
             background-color: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -231,6 +231,30 @@
             font-size: 12px;
         }
         
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #1a2a6c;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 600px) {
             .status-details {
                 grid-template-columns: 1fr;
@@ -261,18 +285,16 @@
                     <label for="application-type">Application Type</label>
                     <select id="application-type" required>
                         <option value="">Select Application Type</option>
-                        <option value="normal">Normal</option>
-                        <option value="tatkaal">Tatkaal</option>
-                        <option value="fresh-normal">Fresh Normal</option>
-                        <option value="fresh-tatkaal">Fresh Tatkaal</option>
-                        <option value="reissue-normal">Reissue Normal</option>
-                        <option value="reissue-tatkaal">Reissue Tatkaal</option>
+                        <option value="Passport">Passport</option>
+                        <option value="PCC">Police Clearance Certificate (PCC)</option>
+                        <option value="IC">Identity Certificate (IC)</option>
+                        <option value="GEP">Global Entry Program (GEP)</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label for="application-number">Application Number</label>
-                    <input type="text" id="application-number" placeholder="Enter your application number" required>
+                    <label for="application-number">Application Number (File Number)</label>
+                    <input type="text" id="application-number" placeholder="Enter your application/file number" required>
                 </div>
                 
                 <div class="form-group">
@@ -282,6 +304,11 @@
                 
                 <button type="submit" class="btn">Track Application</button>
             </form>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Fetching application status...</p>
+            </div>
             
             <div id="result-section" class="result-section">
                 <div class="status-card">
@@ -330,9 +357,19 @@
             const appNumber = document.getElementById('application-number').value;
             const dob = document.getElementById('dob').value;
             
-            // In a real implementation, you would make an API call here
-            // For demonstration, we'll simulate a response
-            simulateTrackingResponse(appType, appNumber, dob);
+            // Show loading indicator
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('result-section').classList.remove('active');
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // In a real implementation, you would make an API call here
+                // For demonstration, we'll simulate a response
+                simulateTrackingResponse(appType, appNumber, dob);
+                
+                // Hide loading indicator
+                document.getElementById('loading').classList.remove('active');
+            }, 1500);
         });
         
         function simulateTrackingResponse(appType, appNumber, dob) {
@@ -345,7 +382,7 @@
             
             // Update result section with user input
             document.getElementById('result-app-number').textContent = appNumber;
-            document.getElementById('result-app-type').textContent = document.getElementById('application-type').options[document.getElementById('application-type').selectedIndex].text;
+            document.getElementById('result-app-type').textContent = appType;
             document.getElementById('result-dob').textContent = formattedDob;
             
             // Simulate different statuses based on application number
